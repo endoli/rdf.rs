@@ -45,6 +45,7 @@ pub trait TripleAction {
 }
 
 /// A collection of triples.
+#[derive(Default)]
 pub struct Graph<'t> {
     triples: Vec<Triple<'t>>,
     actions: Vec<Box<TripleAction>>,
@@ -53,10 +54,7 @@ pub struct Graph<'t> {
 impl<'t> Graph<'t> {
     /// Create a new, empty graph.
     pub fn new() -> Self {
-        Graph {
-            triples: vec![],
-            actions: vec![],
-        }
+        Graph::default()
     }
 
     /// Add an action to be run on each triple to the graph.
@@ -66,7 +64,7 @@ impl<'t> Graph<'t> {
     pub fn add_action(&mut self, action: Box<TripleAction>, run_on_existing: bool) {
         if run_on_existing {
             for triple in &self.triples {
-                action.run(&triple, self);
+                action.run(triple, self);
             }
         }
         self.actions.push(action);
