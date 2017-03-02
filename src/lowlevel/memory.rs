@@ -4,64 +4,32 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Low Level RDF Interface
+//! Memory-backed Low-Level Graph
+//!
+//! ...
 
-/// An RDF Term
-#[allow(missing_docs)]
-#[derive(Debug, PartialEq)]
-pub enum Term<'t> {
-    NamedNode {
-        value: &'t str,
-    },
-    BlankNode {
-        value: &'t str,
-    },
-    Literal {
-        value: &'t str,
-        language: Option<&'t str>,
-        datatype: Option<&'t str>,
-    },
-}
+use lowlevel::*;
 
-/// An RDF Triple
-///
-/// Lifetime parameter `'t` controls the lifetime of the text
-/// data stored within the terms. This allows a reader to not
-/// be required to copy data into separate string objects
-/// while reading and parsing RDF data files.
-#[allow(missing_docs)]
-#[derive(Debug, PartialEq)]
-pub struct Triple<'t> {
-    pub subject: Term<'t>,
-    pub predicate: Term<'t>,
-    pub object: Term<'t>,
-}
-
-/// A trait that can be implemented to provide a way to run
-/// an action whenever a triple is added to a graph.
-pub trait TripleAction {
-    /// The method to run when a triple is added to a graph.
-    fn run(&self, triple: &Triple, graph: &Graph);
-}
-
-/// A collection of triples.
+/// Memory-backed `Graph` implementation.
 #[derive(Default)]
-pub struct Graph<'t> {
+pub struct MemoryGraph<'t> {
     triples: Vec<Triple<'t>>,
     actions: Vec<Box<TripleAction>>,
 }
 
-impl<'t> Graph<'t> {
+impl<'t> MemoryGraph<'t> {
     /// Create a new, empty graph.
     pub fn new() -> Self {
-        Graph::default()
+        MemoryGraph::default()
     }
+}
 
+impl<'t> Graph<'t> for MemoryGraph<'t> {
     /// Add an action to be run on each triple to the graph.
     ///
     /// If `run_on_existing` is `true`, then the action will be run on
     /// all triples currently contained in the graph.
-    pub fn add_action(&mut self, action: Box<TripleAction>, run_on_existing: bool) {
+    fn add_action(&mut self, action: Box<TripleAction>, run_on_existing: bool) {
         if run_on_existing {
             for triple in &self.triples {
                 action.run(triple, self);
@@ -74,7 +42,7 @@ impl<'t> Graph<'t> {
     ///
     /// If actions have been added to the graph, then they will be run
     /// before the triple is pushed into the graph's storage.
-    pub fn add(&mut self, triple: Triple<'t>) {
+    fn add(&mut self, triple: Triple<'t>) {
         for action in &self.actions {
             action.run(&triple, self);
         }
@@ -90,14 +58,14 @@ mod test {
 
     #[test]
     fn create_graph() {
-        let g = Graph::new();
+        let g = MemoryGraph::new();
         assert!(g.triples.is_empty());
         assert!(g.actions.is_empty());
     }
 
     #[test]
     fn add_triple() {
-        let mut g = Graph::new();
+        let mut g = MemoryGraph::new();
         g.add(Triple {
             subject: Term::NamedNode { value: "a" },
             predicate: Term::NamedNode { value: "b" },
@@ -119,7 +87,7 @@ mod test {
     #[test]
     fn run_action_on_add_triple() {
         let count = Rc::new(Cell::<i32>::new(0));
-        let mut g = Graph::new();
+        let mut g = MemoryGraph::new();
         let a = Box::new(CountingTripleAction { count: count.clone() });
         g.add_action(a, false);
         g.add(Triple {
@@ -133,7 +101,7 @@ mod test {
     #[test]
     fn run_action_on_add_action() {
         let count = Rc::new(Cell::<i32>::new(0));
-        let mut g = Graph::new();
+        let mut g = MemoryGraph::new();
         g.add(Triple {
             subject: Term::NamedNode { value: "a" },
             predicate: Term::NamedNode { value: "b" },
