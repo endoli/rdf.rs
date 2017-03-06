@@ -4,17 +4,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! RDF
-//!
-//! ...
+//! # Parse RDF
 
-#![warn(missing_docs)]
-#![deny(trivial_numeric_casts,
-        unsafe_code, unstable_features,
-        unused_import_braces, unused_qualifications)]
-
-#[macro_use]
-extern crate nom;
-
-pub mod lowlevel;
-pub mod parse;
+pub mod common;
