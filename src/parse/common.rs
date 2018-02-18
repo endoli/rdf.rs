@@ -40,7 +40,6 @@ named!(pub string_literal_quote <&str, &str>,
         tag_s!("\"") >>
         (string)));
 
-
 named!(pub literal <&str, &str>,
     do_parse!(
         lit: call!(string_literal_quote) >>

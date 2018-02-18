@@ -12,8 +12,12 @@ pub mod memory;
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq)]
 pub enum Term<'t> {
-    NamedNode { value: &'t str },
-    BlankNode { value: &'t str },
+    NamedNode {
+        value: &'t str,
+    },
+    BlankNode {
+        value: &'t str,
+    },
     Literal {
         value: &'t str,
         language: Option<&'t str>,

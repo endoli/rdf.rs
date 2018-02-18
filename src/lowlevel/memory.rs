@@ -88,7 +88,9 @@ mod test {
     fn run_action_on_add_triple() {
         let count = Rc::new(Cell::<i32>::new(0));
         let mut g = MemoryGraph::new();
-        let a = Box::new(CountingTripleAction { count: count.clone() });
+        let a = Box::new(CountingTripleAction {
+            count: count.clone(),
+        });
         g.add_action(a, false);
         g.add(Triple {
             subject: Term::NamedNode { value: "a" },
@@ -107,7 +109,9 @@ mod test {
             predicate: Term::NamedNode { value: "b" },
             object: Term::NamedNode { value: "c" },
         });
-        let a = Box::new(CountingTripleAction { count: count.clone() });
+        let a = Box::new(CountingTripleAction {
+            count: count.clone(),
+        });
         g.add_action(a, true);
         assert_eq!(count.get(), 1);
         g.add(Triple {
