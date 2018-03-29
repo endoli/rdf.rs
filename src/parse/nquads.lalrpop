@@ -1,0 +1,52 @@
+use super::lexer;
+
+grammar<'input>;
+
+// [1]	nquadsDoc	::=	statement? (EOL statement)* EOL?
+pub nquads_doc: () = statement? ("EOL" statement)* "EOL"?;
+
+// [2]	statement	::=	subject predicate object graphLabel? '.'
+statement: () = subject predicate object graph_label? ".";
+
+// [3]	subject	::=	IRIREF | BLANK_NODE_LABEL
+subject: () = {
+    "IRIREF",
+    "BLANK_NODE_LABEL",
+};
+
+// [4]	predicate	::=	IRIREF
+predicate: () = "IRIREF";
+
+// [5]	object	::=	IRIREF | BLANK_NODE_LABEL | literal
+object: () = {
+    "IRIREF",
+    "BLANK_NODE_LABEL",
+    literal
+};
+
+// [6]	graphLabel	::=	IRIREF | BLANK_NODE_LABEL
+graph_label: () = {
+    "IRIREF",
+    "BLANK_NODE_LABEL",
+};
+
+// [7]	literal	::=	STRING_LITERAL_QUOTE ('^^' IRIREF | LANGTAG)?
+literal: () = {
+    "STRING_LITERAL_QUOTE" "^^" "IRIREF",
+    "STRING_LITERAL_QUOTE" "LANGTAG",
+    "STRING_LITERAL_QUOTE"
+};
+
+extern {
+    type Location = usize;
+
+    enum lexer::Token<'input> {
+        "EOL" => lexer::Token::EOL,
+        "." => lexer::Token::Period,
+        "^^" => lexer::Token::Carets,
+        "IRIREF" => lexer::Token::IRIRef(<&'input str>),
+        "LANGTAG" => lexer::Token::LangTag(<&'input str>),
+        "STRING_LITERAL_QUOTE" => lexer::Token::StringLiteralQuote(<&'input str>),
+        "BLANK_NODE_LABEL" => lexer::Token::BlankNodeLabel(<&'input str>),
+    }
+}
