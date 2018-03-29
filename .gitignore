@@ -1,4 +1,5 @@
 target
 Cargo.lock
 /src/parse/nquads.rs
+/src/parse/ntriples.rs
 /src/parse/turtle.rs

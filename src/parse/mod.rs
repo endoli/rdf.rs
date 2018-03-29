@@ -10,4 +10,6 @@ pub mod lexer;
 #[allow(missing_docs)]
 pub mod nquads;
 #[allow(missing_docs)]
+pub mod ntriples;
+#[allow(missing_docs)]
 pub mod turtle;
