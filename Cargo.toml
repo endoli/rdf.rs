@@ -11,4 +11,3 @@ homepage = "https://github.com/endoli/rdf.rs"
 repository = "https://github.com/endoli/rdf.rs"
 
 [dependencies]
-nom = "3"
