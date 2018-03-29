@@ -7,3 +7,5 @@
 //! # Parse RDF
 
 pub mod lexer;
+#[allow(missing_docs)]
+pub mod turtle;

@@ -10,4 +10,10 @@ documentation = "https://endoli.github.io/rdf.rs"
 homepage = "https://github.com/endoli/rdf.rs"
 repository = "https://github.com/endoli/rdf.rs"
 
+build = "build.rs"
+
+[build-dependencies]
+lalrpop = "0.15.0"
+
 [dependencies]
+lalrpop-util = "0.15.0"

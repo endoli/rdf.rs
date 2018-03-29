@@ -6,12 +6,31 @@ use std::str::CharIndices;
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 pub enum Token<'input> {
     EOL,
-    IRIREF(&'input str),
-    STRING_LITERAL_QUOTE(&'input str),
-    BLANK_NODE_LABEL(&'input str),
-    LANG_TAG(&'input str),
-    PERIOD,
-    DOUBLE_CARET,
+    Period,
+    Comma,
+    SemiColon,
+    LeftBracket,
+    RightBracket,
+    LeftParen,
+    RightParen,
+    Carets,
+    A,
+    True,
+    False,
+    Prefix,
+    Base,
+    SparqlPrefix,
+    SparqlBase,
+    PNAME_LN,
+    PNAME_NS,
+    IRIRef(&'input str),
+    LangTag(&'input str),
+    Integer,
+    Decimal,
+    Double,
+    StringLiteralQuote(&'input str),
+    BlankNodeLabel(&'input str),
+    ANON,
 }
 
 pub struct Lexer<'input> {
@@ -80,7 +99,7 @@ impl<'input> Lexer<'input> {
         start: usize,
     ) -> Result<(usize, Token<'input>, usize), ::std::io::Error> {
         if let Some((end, '^')) = self.lookahead {
-            Ok((start, Token::DOUBLE_CARET, end))
+            Ok((start, Token::Carets, end))
         } else {
             unimplemented!()
         }
@@ -99,7 +118,7 @@ impl<'input> Iterator for Lexer<'input> {
             return Some(match ch {
                 ' ' | '\t' => continue,
                 '^' => self.take_double_caret(start),
-                '.' => Ok((start, Token::PERIOD, start)),
+                '.' => Ok((start, Token::Period, start)),
                 '@' => self.take_lang_tag(start),
                 _ => panic!(),
             })
@@ -115,12 +134,12 @@ mod tests {
     #[test]
     fn parse_period() {
         let mut l = Lexer::new(".");
-        assert_eq!(l.next().unwrap().unwrap().1, Token::PERIOD);
+        assert_eq!(l.next().unwrap().unwrap().1, Token::Period);
     }
 
     #[test]
     fn parse_double_caret() {
         let mut l = Lexer::new("^^");
-        assert_eq!(l.next().unwrap().unwrap().1, Token::DOUBLE_CARET);
+        assert_eq!(l.next().unwrap().unwrap().1, Token::Carets);
     }
 }
