@@ -112,6 +112,9 @@ BooleanLiteral: () = {
 // [17] String ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
 String: () = {
     "STRING_LITERAL_QUOTE",
+    "STRING_LITERAL_LONG_QUOTE",
+    "STRING_LITERAL_SINGLE_QUOTE",
+    "STRING_LITERAL_LONG_SINGLE_QUOTE",
 };
 
 // [135s] iri ::= IRIREF | PrefixedName
@@ -159,6 +162,9 @@ extern {
         "DECIMAL" => Token::Decimal(<&'input str>),
         "DOUBLE" => Token::Double(<&'input str>),
         "STRING_LITERAL_QUOTE" => Token::StringLiteralQuote(<&'input str>),
+        "STRING_LITERAL_LONG_QUOTE" => Token::StringLiteralLongQuote(<&'input str>),
+        "STRING_LITERAL_SINGLE_QUOTE" => Token::StringLiteralSingleQuote(<&'input str>),
+        "STRING_LITERAL_LONG_SINGLE_QUOTE" => Token::StringLiteralLongSingleQuote(<&'input str>),
         "BLANK_NODE_LABEL" => Token::BlankNodeLabel(<&'input str>),
         "ANON" => Token::ANON,
         "COMMENT" => Token::Comment(<&'input str>),
