@@ -1,3 +1,4 @@
+use lowlevel;
 use parse::lexer::Token;
 
 grammar<'input>;
@@ -6,29 +7,29 @@ grammar<'input>;
 pub ntriples_doc: () = triple? ("EOL" triple)* "EOL"?;
 
 // [2]	triple	::=	subject predicate object '.'
-triple: () = subject predicate object ".";
+triple: lowlevel::Triple<'input> = <subject:subject> <predicate:predicate> <object:object> "." => lowlevel::Triple { <> };
 
 // [3]	subject	::=	IRIREF | BLANK_NODE_LABEL
-subject: () = {
-    "IRIREF",
-    "BLANK_NODE_LABEL",
+subject: lowlevel::Term<'input> = {
+    "IRIREF" => lowlevel::Term::NamedNode { value: <> },
+    "BLANK_NODE_LABEL" => lowlevel::Term::BlankNode { value: <> },
 };
 
 // [4]	predicate	::=	IRIREF
-predicate: () = "IRIREF";
+predicate: lowlevel::Term<'input> = "IRIREF" => lowlevel::Term::NamedNode { value: <> };
 
 // [5]	object	::=	IRIREF | BLANK_NODE_LABEL | literal
-object: () = {
-    "IRIREF",
-    "BLANK_NODE_LABEL",
-    literal
+object: lowlevel::Term<'input> = {
+    "IRIREF" => lowlevel::Term::NamedNode { value: <> },
+    "BLANK_NODE_LABEL" => lowlevel::Term::BlankNode { value: <> },
+    literal,
 };
 
 // [6]	literal	::=	STRING_LITERAL_QUOTE ('^^' IRIREF | LANGTAG)?
-literal: () = {
-    "STRING_LITERAL_QUOTE" "^^" "IRIREF",
-    "STRING_LITERAL_QUOTE" "LANGTAG",
-    "STRING_LITERAL_QUOTE"
+literal: lowlevel::Term<'input> = {
+    <"STRING_LITERAL_QUOTE"> "^^" "IRIREF" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
+    <"STRING_LITERAL_QUOTE"> "LANGTAG" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
+    <"STRING_LITERAL_QUOTE"> => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
 };
 
 extern {
