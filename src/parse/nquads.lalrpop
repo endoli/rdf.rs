@@ -1,4 +1,4 @@
-use super::lexer;
+use parse::lexer::Token;
 
 grammar<'input>;
 
@@ -40,13 +40,13 @@ literal: () = {
 extern {
     type Location = usize;
 
-    enum lexer::Token<'input> {
-        "EOL" => lexer::Token::EOL,
-        "." => lexer::Token::Period,
-        "^^" => lexer::Token::Carets,
-        "IRIREF" => lexer::Token::IRIRef(<&'input str>),
-        "LANGTAG" => lexer::Token::LangTag(<&'input str>),
-        "STRING_LITERAL_QUOTE" => lexer::Token::StringLiteralQuote(<&'input str>),
-        "BLANK_NODE_LABEL" => lexer::Token::BlankNodeLabel(<&'input str>),
+    enum Token<'input> {
+        "EOL" => Token::EOL,
+        "." => Token::Period,
+        "^^" => Token::Carets,
+        "IRIREF" => Token::IRIRef(<&'input str>),
+        "LANGTAG" => Token::LangTag(<&'input str>),
+        "STRING_LITERAL_QUOTE" => Token::StringLiteralQuote(<&'input str>),
+        "BLANK_NODE_LABEL" => Token::BlankNodeLabel(<&'input str>),
     }
 }

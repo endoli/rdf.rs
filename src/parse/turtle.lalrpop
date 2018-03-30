@@ -1,4 +1,4 @@
-use super::lexer;
+use parse::lexer::Token;
 
 grammar<'input>;
 
@@ -135,31 +135,31 @@ BlankNode: () = {
 extern {
     type Location = usize;
 
-    enum lexer::Token<'input> {
-        "." => lexer::Token::Period,
-        "," => lexer::Token::Comma,
-        ";" => lexer::Token::SemiColon,
-        "[" => lexer::Token::LeftBracket,
-        "]" => lexer::Token::RightBracket,
-        "(" => lexer::Token::LeftParen,
-        ")" => lexer::Token::RightParen,
-        "^^" => lexer::Token::Carets,
-        "a" => lexer::Token::A,
-        "true" => lexer::Token::True,
-        "false" => lexer::Token::False,
-        "@prefix" => lexer::Token::Prefix,
-        "@base" => lexer::Token::Base,
-        "PREFIX" => lexer::Token::SparqlPrefix,
-        "BASE" => lexer::Token::SparqlBase,
-        "PNAME_LN" => lexer::Token::PNAME_LN,
-        "PNAME_NS" => lexer::Token::PNAME_NS,
-        "IRIREF" => lexer::Token::IRIRef(<&'input str>),
-        "LANGTAG" => lexer::Token::LangTag(<&'input str>),
-        "INTEGER" => lexer::Token::Integer,
-        "DECIMAL" => lexer::Token::Decimal,
-        "DOUBLE" => lexer::Token::Double,
-        "STRING_LITERAL_QUOTE" => lexer::Token::StringLiteralQuote(<&'input str>),
-        "BLANK_NODE_LABEL" => lexer::Token::BlankNodeLabel(<&'input str>),
-        "ANON" => lexer::Token::ANON,
+    enum Token<'input> {
+        "." => Token::Period,
+        "," => Token::Comma,
+        ";" => Token::SemiColon,
+        "[" => Token::LeftBracket,
+        "]" => Token::RightBracket,
+        "(" => Token::LeftParen,
+        ")" => Token::RightParen,
+        "^^" => Token::Carets,
+        "a" => Token::A,
+        "true" => Token::True,
+        "false" => Token::False,
+        "@prefix" => Token::Prefix,
+        "@base" => Token::Base,
+        "PREFIX" => Token::SparqlPrefix,
+        "BASE" => Token::SparqlBase,
+        "PNAME_LN" => Token::PNAME_LN,
+        "PNAME_NS" => Token::PNAME_NS,
+        "IRIREF" => Token::IRIRef(<&'input str>),
+        "LANGTAG" => Token::LangTag(<&'input str>),
+        "INTEGER" => Token::Integer,
+        "DECIMAL" => Token::Decimal,
+        "DOUBLE" => Token::Double,
+        "STRING_LITERAL_QUOTE" => Token::StringLiteralQuote(<&'input str>),
+        "BLANK_NODE_LABEL" => Token::BlankNodeLabel(<&'input str>),
+        "ANON" => Token::ANON,
     }
 }
