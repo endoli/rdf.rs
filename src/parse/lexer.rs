@@ -31,6 +31,7 @@ pub enum Token<'input> {
     StringLiteralQuote(&'input str),
     BlankNodeLabel(&'input str),
     ANON,
+    Comment(&'input str),
 }
 
 pub struct Lexer<'input> {

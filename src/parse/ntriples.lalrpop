@@ -43,5 +43,6 @@ extern {
         "LANGTAG" => Token::LangTag(<&'input str>),
         "STRING_LITERAL_QUOTE" => Token::StringLiteralQuote(<&'input str>),
         "BLANK_NODE_LABEL" => Token::BlankNodeLabel(<&'input str>),
+        "COMMENT" => Token::Comment(<&'input str>),
     }
 }
