@@ -27,9 +27,15 @@ object: lowlevel::Term<'input> = {
 
 // [6]	literal	::=	STRING_LITERAL_QUOTE ('^^' IRIREF | LANGTAG)?
 literal: lowlevel::Term<'input> = {
-    <"STRING_LITERAL_QUOTE"> "^^" "IRIREF" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
-    <"STRING_LITERAL_QUOTE"> "LANGTAG" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
-    <"STRING_LITERAL_QUOTE"> => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
+    <v:"STRING_LITERAL_QUOTE"> "^^" <dt:"IRIREF"> => {
+        lowlevel::Term::Literal { value: v, language: None, datatype: Some(dt) }
+    },
+    <v:"STRING_LITERAL_QUOTE"> <lang:"LANGTAG"> => {
+        lowlevel::Term::Literal { value: v, language: Some(lang), datatype: None }
+    },
+    <v:"STRING_LITERAL_QUOTE"> => {
+        lowlevel::Term::Literal { value: v, language: None, datatype: None }
+    },
 };
 
 extern {
