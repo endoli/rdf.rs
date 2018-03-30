@@ -1,3 +1,4 @@
+use lowlevel;
 use parse::lexer::Token;
 
 grammar<'input>;
@@ -65,7 +66,7 @@ subject: () = {
 };
 
 // [11] predicate ::= iri
-predicate: () = iri;
+predicate: lowlevel::Term<'input> = iri => lowlevel::Term::Literal { value: <>, language: None, datatype: None };
 
 // [12] object ::= iri | BlankNode | collection | blankNodePropertyList | literal
 object: () = {
@@ -77,10 +78,10 @@ object: () = {
 };
 
 // [13] literal ::= RDFLiteral | NumericLiteral | BooleanLiteral
-literal: () = {
-    RDFLiteral,
-    NumericLiteral,
-    BooleanLiteral,
+literal: lowlevel::Term<'input> = {
+    RDFLiteral => <>,
+    NumericLiteral => <>,
+    BooleanLiteral => <>,
 };
 
 // [14] blankNodePropertyList ::= '[' predicateObjectList ']'
@@ -90,43 +91,49 @@ blankNodePropertyList: () = "[" predicateObjectList "]";
 collection: () = "(" object* ")";
 
 // [16] NumericLiteral ::= INTEGER | DECIMAL | DOUBLE
-NumericLiteral: () = {
-    "INTEGER",
-    "DECIMAL",
-    "DOUBLE",
+NumericLiteral: lowlevel::Term<'input> = {
+    "INTEGER" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
+    "DECIMAL" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
+    "DOUBLE" => lowlevel::Term::Literal { value: <>, language: None, datatype: None },
 };
 
 // [128s] RDFLiteral ::= String (LANGTAG | '^^' iri)?
-RDFLiteral: () = {
-    String "LANGTAG",
-    String "^^" iri,
-    String,
+RDFLiteral: lowlevel::Term<'input> = {
+    <v:String> <lang:"LANGTAG"> => {
+        lowlevel::Term::Literal { value: v, language: Some(lang), datatype: None }
+    },
+    <v:String> "^^" <dt:iri> => {
+        lowlevel::Term::Literal { value: v, language: None, datatype: Some(dt) }
+    },
+    <v:String> => {
+        lowlevel::Term::Literal { value: v, language: None, datatype: None }
+    },
 };
 
 // [133s] BooleanLiteral ::= 'true' | 'false'
-BooleanLiteral: () = {
-    "true",
-    "false",
+BooleanLiteral: lowlevel::Term<'input> = {
+    "true" => lowlevel::Term::Literal { value: "true", language: None, datatype: None },
+    "false" => lowlevel::Term::Literal { value: "false", language: None, datatype: None },
 };
 
 // [17] String ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
-String: () = {
-    "STRING_LITERAL_QUOTE",
-    "STRING_LITERAL_LONG_QUOTE",
-    "STRING_LITERAL_SINGLE_QUOTE",
-    "STRING_LITERAL_LONG_SINGLE_QUOTE",
+String: &'input str = {
+    "STRING_LITERAL_QUOTE" => <>,
+    "STRING_LITERAL_LONG_QUOTE" => <>,
+    "STRING_LITERAL_SINGLE_QUOTE" => <>,
+    "STRING_LITERAL_LONG_SINGLE_QUOTE" => <>,
 };
 
 // [135s] iri ::= IRIREF | PrefixedName
-iri: () = {
-    "IRIREF",
-    PrefixedName,
+iri: &'input str = {
+    "IRIREF" => <>,
+    PrefixedName => <>,
 };
 
 // [136s] PrefixedName ::= PNAME_LN | PNAME_NS
-PrefixedName: () = {
-    "PNAME_LN",
-    "PNAME_NS",
+PrefixedName: &'input str = {
+    "PNAME_LN" => <>,
+    "PNAME_NS" => <>,
 };
 
 // [137s] BlankNode ::= BLANK_NODE_LABEL | ANON
