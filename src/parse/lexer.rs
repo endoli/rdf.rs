@@ -106,7 +106,10 @@ impl<'input> Lexer<'input> {
         }
     }
 
-    fn take_lang_tag(&mut self, _start: usize) -> Result<(usize, Token<'input>, usize), ::std::io::Error> {
+    fn take_lang_tag(
+        &mut self,
+        _start: usize,
+    ) -> Result<(usize, Token<'input>, usize), ::std::io::Error> {
         unimplemented!()
     }
 }
@@ -122,7 +125,7 @@ impl<'input> Iterator for Lexer<'input> {
                 '.' => Ok((start, Token::Period, start)),
                 '@' => self.take_lang_tag(start),
                 _ => panic!(),
-            })
+            });
         }
         None
     }
