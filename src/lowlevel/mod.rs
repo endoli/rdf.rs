@@ -25,6 +25,25 @@ pub enum Term<'t> {
     },
 }
 
+/// An RDF Statement
+///
+/// A statement differs from a [`Triple`] in that it contains
+/// an additional member to refer to the graph to which it
+/// belongs.
+///
+/// Lifetime parameter `'t` controls the lifetime of the text
+/// data stored within the terms. This allows a reader to not
+/// be required to copy data into separate string objects
+/// while reading and parsing RDF data files.
+#[allow(missing_docs)]
+#[derive(Debug, PartialEq)]
+pub struct Statement<'t> {
+    pub subject: Term<'t>,
+    pub predicate: Term<'t>,
+    pub object: Term<'t>,
+    pub graph: Option<Term<'t>>,
+}
+
 /// An RDF Triple
 ///
 /// Lifetime parameter `'t` controls the lifetime of the text
@@ -59,4 +78,18 @@ pub trait Graph<'t> {
     /// If actions have been added to the graph, then they will be run
     /// before the triple is pushed into the graph's storage.
     fn add(&mut self, triple: Triple<'t>);
+
+    /// Add a statement to the graph.
+    ///
+    /// If actions have been added to the graph, then they will be run
+    /// before the statement is pushed into the graph's storage.
+    ///
+    /// A statement should only be added to the graph to which it belongs.
+    fn add_statement(&mut self, statement: Statement<'t>) {
+        self.add(Triple {
+            subject: statement.subject,
+            predicate: statement.predicate,
+            object: statement.object,
+        });
+    }
 }
