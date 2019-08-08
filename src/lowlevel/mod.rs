@@ -62,7 +62,7 @@ pub struct Triple<'t> {
 /// an action whenever a triple is added to a graph.
 pub trait TripleAction {
     /// The method to run when a triple is added to a graph.
-    fn run(&self, triple: &Triple, graph: &Graph);
+    fn run(&self, triple: &Triple, graph: &dyn Graph);
 }
 
 /// A collection of triples.
@@ -71,7 +71,7 @@ pub trait Graph<'t> {
     ///
     /// If `run_on_existing` is `true`, then the action will be run on
     /// all triples currently contained in the graph.
-    fn add_action(&mut self, action: Box<TripleAction>, run_on_existing: bool);
+    fn add_action(&mut self, action: Box<dyn TripleAction>, run_on_existing: bool);
 
     /// Add a triple to the graph.
     ///

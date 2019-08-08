@@ -14,7 +14,7 @@ use lowlevel::*;
 #[derive(Default)]
 pub struct MemoryGraph<'t> {
     triples: Vec<Triple<'t>>,
-    actions: Vec<Box<TripleAction>>,
+    actions: Vec<Box<dyn TripleAction>>,
 }
 
 impl<'t> MemoryGraph<'t> {
@@ -29,7 +29,7 @@ impl<'t> Graph<'t> for MemoryGraph<'t> {
     ///
     /// If `run_on_existing` is `true`, then the action will be run on
     /// all triples currently contained in the graph.
-    fn add_action(&mut self, action: Box<TripleAction>, run_on_existing: bool) {
+    fn add_action(&mut self, action: Box<dyn TripleAction>, run_on_existing: bool) {
         if run_on_existing {
             for triple in &self.triples {
                 action.run(triple, self);
@@ -79,7 +79,7 @@ mod test {
     }
 
     impl TripleAction for CountingTripleAction {
-        fn run(&self, _triple: &Triple, _graph: &Graph) {
+        fn run(&self, _triple: &Triple, _graph: &dyn Graph) {
             self.count.set(self.count.get() + 1);
         }
     }
